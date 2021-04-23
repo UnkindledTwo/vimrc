@@ -1,96 +1,111 @@
 "Automatically set language to English
 set langmenu=en_US
 language en
+
 "Automatically open nerdtree when vim starts
-au VimEnter * NERDTree Desktop
+"au VimEnter * NERDTree Desktop
+
+au VimEnter * WToggleClean 		"Window tweaks
+au VimEnter * WCenter 90 		"when gVim starts.
+au VimEnter * WSetAlpha 250 	"gVim windows only
 
 "Mappings for NERDTree
 cnoreabbrev	tree NERDTree
 nmap <F1> :NERDTreeToggle<CR>
+nmap <F2> :WCenter 90<CR>
+nmap <F3> :silent !start powershell<CR>
 
 "Change NERDTree arrow icons
-let g:NERDTreeDirArrowExpandable = '|>'
-let g:NERDTreeDirArrowCollapsible = 'V' 
+"let g:NERDTreeDirArrowExpandable = '|>'
+"let g:NERDTreeDirArrowCollapsible = 'V' 
 									   
+let g:ycm_global_ycm_extra_conf = 'D:\Vim\_ycm_extra_conf.py'
 
 " Vim with all enhancements
 source $VIMRUNTIME/vimrc_example.vim
 
 "Set colorscheme
-colorscheme onedark
+colorscheme gruvbox
+let g:airline_theme='base16_gruvbox_dark_hard'	"Set airline theme.
+let g:airline#extensions#branch#enabled = 0 	"Disable git branches.
+let g:airline_powerline_fonts = 1				"Enable powerline fonts.
+let g:airline#extensions#hunks#enabled = 0		"Disable hunks.
+let g:airline_skip_empty_sections = 1			"Skip empty parts.
+let g:airline#extensions#whitespace#enabled = 0	"Don't show white spaces in the airline.
 
-"Set lightline colors
-let g:lightline = {}
-let g:lightline.colorscheme = 'onedark'
+let g:rainbow_active = 1
+au FileType c,cpp,objc,objcpp call rainbow#load()	"Load rainbow brackets
 
-"Show commands
-set showcmd
-"Automatically read the file when it is changed from outside
-set autoread
-"Set the font
-set guifont=InputMono_Medium:h12:W500:cTURKISH:qDRAFT
-"Automatically set the working directory
-set autochdir
-"Show file name etc. in the statusbar
-set laststatus=2
-"Set encoding for YCM plugin
-set encoding=utf-8
-"Tab width with a comfy 4
-set tabstop=4
-"Set nocompatible
-set nocompatible
-"Show line numbers
-set number
-"Whopping 256 colors
-set t_Co=256
-"Allow the use of mouse
-set mouse=a
-"Auto indent
-filetype indent on
+set history=1000 			"Increase undo history
+
+set foldmethod=indent 		"Enable code folding
+set foldlevel=99			"Enable code folding
+
+"Set a key for folding
+nnoremap <space> za	
+
+" Disable blinking:
+set guicursor+=a:blinkon0
+
+" Remove previous setting:
+"set guicursor-=a:blinkon0
+
+" Restore default setting:
+"set guicursor&
+
+set showcmd 		"Show commands
+
+set autoread 		"Automatically read the file when it is changed from outside
+
+set guifont=InputMono_Medium:h12:W500:cTURKISH:qDRAFT "Set the font
+
+set autochdir 		"Automatically set the working directory
+
+set laststatus=2 	"Show file name etc. in the statusbar
+
+set encoding=utf-8 	"Set encoding for YCM plugin
+
+set tabstop=4 		"Tab width with a comfy 4
+
+set nocompatible 	"Set commands incompatible with vi
+
+set number 			"Show line numbers
+
+set t_Co=256 		"Whopping 256 colors
+
+set mouse=a			"Allow the use of mouse
+
+filetype indent on	"Auto indent
+
 set autoindent
-"Width when a paragraph is shifted
-set shiftwidth=4
-"Highlight the line with the cursor
-set cursorline
+
+set shiftwidth=4	"Width when a paragraph is shifted
+
+set cursorline		"Highlight the line with the cursor
+
 "Disable title, menubar and scrollbars
-set guioptions -=T
-set guioptions -=m 
-set guioptions -=L
-"Completions shown for autocomplete
-set pumheight=10
+if has('gui_running')
+	set guioptions -=T
+	set guioptions -=m 
+	set guioptions -=L
+endif
+
+set pumheight=10	"Completions shown for autocomplete
+
 "No backup, swap or undo file
 set nobackup
 set noswapfile
 set noundofile
+
 "Set backup, swap and unde file locations
 set backupdir=D:\Vim\vim82\Backup
 set directory=D:\Vim\vim82\Swap
 set undodir=D:\Vim\vim82\Undo
-"Don't show --INSERT-- etc. at the bottom
-set noshowmode
 
-"clang path
-let g:clang_library_path='D:\LLVM\bin'
-"Disable YCM preview window
-set completeopt-=preview
+set noshowmode	"Don't show --INSERT-- etc. at the bottom
 
-filetype off
-
-set rtp+=D:\Vim\vim82\bundle\Vundle.vim
-call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
-" let Vundle manage Vundle, required
-"Plugins
-Plugin 'VundleVim/Vundle.vim'
-Plugin 'frazrepo/vim-rainbow'
-Plugin 'preservim/nerdtree'
-Bundle 'OmniSharp/omnisharp-vim'
-Plugin 'Valloric/YouCompleteMe'
-Plugin 'itchyny/lightline.vim'
-Plugin 'shinchu/lightline-gruvbox.vim'
-Plugin 'sheerun/vim-polyglot'
-Plugin 'mileszs/ack.vim'
+let g:clang_library_path='D:\LLVM\bin'	"clang path
+set completeopt-=preview				"Disable YCM preview window
 
 "-----------Auto Brackets-----------------"
 inoremap ( ()<Esc>i
@@ -101,21 +116,48 @@ inoremap ' ''<Esc>i
 inoremap " ""<Esc>i
 "
 
+"Python venv support
+py3 << EOF
+import os
+import sys
+if 'VIRTUAL_ENV' in os.environ:
+  project_base_dir = os.environ['VIRTUAL_ENV']
+  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+  execfile(activate_this, dict(__file__=activate_this))
+EOF
+
+filetype off
+
+set rtp+=D:\Vim\vim82\bundle\Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+" let Vundle manage Vundle, required
+"Plugins
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+Plugin 'kkoenig/wimproved.vim'
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'frazrepo/vim-rainbow'
+Plugin 'preservim/nerdtree'
+Bundle 'OmniSharp/omnisharp-vim'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'sheerun/vim-polyglot'
+
 
 autocmd BufRead,BufNewFile *.xaml :set filetype=xml
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
 " plugin on GitHub repo
-Plugin 'tpope/vim-fugitive'
 " plugin from http://vim-scripts.org/vim/scripts.html
 " Plugin 'L9'
 " Git plugin not hosted on GitHub
-Plugin 'git://git.wincent.com/command-t.git'
 " git repos on your local machine (i.e. when working on your own plugin)
-"
+Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+Plugin 'git://git.wincent.com/command-t.git'
+Plugin 'tpope/vim-fugitive'
 " The sparkup vim script is in a subdirectory of this repo called vim.
 " Pass the path to set the runtimepath properly.
-Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 " Install L9 and avoid a Naming conflict if you've already installed a
 " different version somewhere else.
 " Plugin 'ascenator/L9', {'name': 'newL9'}
@@ -137,7 +179,6 @@ filetype plugin indent on    " required
 
 " Use the internal diff if available.
 " Otherwise use the special 'diffexpr' for Windows.
-
 
 
 
